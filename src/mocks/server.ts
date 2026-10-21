@@ -4,17 +4,6 @@ createServer({
     models: {
         todos: Model
     },
-    seeds(server) {
-    server.db.loadData({
-      todos: [
-        {id: '1', label: 'Todo 1', complete: true},
-        {id: '2', label: 'Todo 2', complete: false},
-        {id: '3', label: 'Todo 3', complete: false},
-        {id: '4', label: 'Todo 4', complete: false},
-        {id: '5', label: 'Todo 5', complete: true},
-      ],
-    })
-    },
     routes() {
 
         this.namespace = 'api';
@@ -25,30 +14,33 @@ createServer({
         this.get('/todos', (schema) => {
             return schema.all('todos');
         })
+        
+        this.post('/todos', (schema, request) => {
+            const task = JSON.parse(request.requestBody);
+            return schema.create('todos', task);
+        })
 
         this.get('/todos/:id', (schema, request) => {
             const id = request.params.id;
 
-            return schema.db.tasks.find(id);
+            return schema.find('todos', id);
         })
 
-        // this.put('/todos/:id', (schema, request) => {
-        //     const id = request.params.id;
-        //     let task = JSON.parse(request.requestBody) ;
-        //     schema.db.tasks.find(id);
+        this.put('/todos/:id', (schema, request) => {
+            const id = request.params.id;
 
-        //     return data;
-        // })
-        
-        this.post('/todos', (schema, request) => {
-            const task = JSON.parse(request.requestBody);
-            return schema.db.tasks.insert(task);
+            const newTask = JSON.parse(request.requestBody) ;
+            
+            const todo = schema.find('todos', id);
+            todo?.update(newTask)
+            return {};
         })
         
         this.delete('/todos/:id', (schema, request) => {
             const id = request.params.id;
-
-            return schema.todos.find(id).destroy();
+            const todo = schema.find('todos', id);
+            todo?.destroy();
+            return {};
         })
 
     }
