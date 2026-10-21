@@ -1,6 +1,7 @@
 import { useState } from "react"
 
 export function App() {
+  const [value, setValue] = useState('')
   const [item, setItem] = useState([
     {id: '1', label: 'Fazer almoço'},
     {id: '2', label: 'Fazer almoço'},
@@ -10,8 +11,19 @@ export function App() {
 
   return (
     <>
-      <input id="item" type="\" />
-      <button>Adicionar</button>
+      <input id="item" type="\" 
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      <button
+        onClick={() => {
+          setItem([
+            ...item,
+            {id: (item.length + 1).toString(), label: value}
+          ]);
+          setValue('');
+        }}
+      >Adicionar</button>
 
       <ol>
         {item.map((listItem) => (
