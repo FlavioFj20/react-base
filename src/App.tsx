@@ -2,32 +2,50 @@ import { useState } from "react"
 
 export function App() {
   const [value, setValue] = useState('')
-  const [item, setItem] = useState([
-    {id: '1', label: 'Fazer almoço'},
-    {id: '2', label: 'Fazer almoço'},
-    {id: '3', label: 'Fazer cafe'},
-    {id: '4', label: 'Fazer janta'}
+  const [list, setList] = useState([
+    {id: '1', label: 'Fazer almoço', complete: false},
+    {id: '2', label: 'Fazer almoço', complete: false},
+    {id: '3', label: 'Fazer cafe', complete: false},
+    {id: '4', label: 'Fazer janta', complete: false}
   ]);
 
   return (
     <>
-      <input id="item" type="\" 
+      <input id="item" 
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
       <button
         onClick={() => {
-          setItem([
-            ...item,
-            {id: (item.length + 1).toString(), label: value}
-          ]);
-          setValue('');
-        }}
+            value && setList([
+              ...list,
+              {id: (list.length + 1).toString(), label: value, complete: false}
+            ]);
+            setValue('');
+      }}
       >Adicionar</button>
 
       <ol>
-        {item.map((listItem) => (
-          <li key={listItem.id}>{listItem.label}</li>
+        {list.map((listItem) => (
+          <li key={listItem.id}>
+            {listItem.label + ' '}
+            {listItem.complete ? 'Concluido' : ''}
+
+            <button
+              onClick={() => {
+                setList([...list.map((it) => ({
+                    ...it,
+                    complete: it.id === listItem.id ? true : it. complete
+                  }))
+                ])
+              }}
+            >Concluir</button>
+            <button
+              onClick={() => {
+                setList([...list.filter((it) => it.id !== listItem.id)])
+              }}
+            >Remover</button>
+          </li>
         ))}
       </ol>
     </>
